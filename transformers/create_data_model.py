@@ -1,0 +1,79 @@
+import pandas as pd
+
+if 'transformer' not in globals():
+    from mage_ai.data_preparation.decorators import transformer
+if 'test' not in globals():
+    from mage_ai.data_preparation.decorators import test
+
+
+@transformer
+def transform(df, *args, **kwargs):
+    """
+    Template code for a transformer block.
+
+    Add more parameters to this function if this block has multiple parent blocks.
+    There should be one parameter for each output variable from each parent block.
+
+    Args:
+        data: The output from the upstream parent block
+        args: The output from any additional upstream blocks (if applicable)
+
+    Returns:
+        Anything (e.g. data frame, dictionary, array, int, str, etc.)
+    """
+    # Specify your transformation logic here
+    column_mapper = {
+        "Density\\n(P/Km2)": 'Density_pkm',
+        'Land Area(Km2)': 'Land_Area',
+        'Renewables (% equivalent primary energy)': 'Renewables_perct_primary_energy',
+        'Energy intensity level of primary energy (MJ/$2017 PPP GDP)': 'Energy_intensity_level_of_primary_energy',
+        'Primary energy consumption per capita (kWh/person)': 'Primary_energy_consumption_per_capita_kWhperson',
+        'Low-carbon electricity (% electricity)': 'Low-carbon_electricity_perct',
+        'Electricity from renewables (TWh)': 'Electricity_from_renewables',
+        'Electricity from nuclear (TWh)': 'Electricity_from_nuclear',
+        'Electricity from fossil fuels (TWh)': 'Electricity_from_fossil_fuels',
+        'Renewable energy share in the total final energy consumption (%)': 'Renewable_energy_share_in_total_final_energy_consumption_perct',
+        'Financial flows to developing countries (US $)': 'Financial_flows_to_developing_countries',
+        'Access to clean fuels for cooking': 'Access_to_clean_fuels_for_cooking',
+        'Access to electricity (% of population)': 'Access_to_electricity_perct'
+    }
+
+    df.rename(columns=column_mapper, inplace=True)
+
+    # country dim
+    country_dim  = df[['Entity', 'Land_Area']].reset_index(drop=True)
+    country_dim.drop_duplicates(inplace=True)
+    country_dim['country_id'] = country_dim.index
+
+    # location dim
+    location_dim = df[['Latitude', 'Longitude']].reset_index(drop=True)
+    location_dim.drop_duplicates(inplace=True)
+    location_dim['loaction_id'] = location_dim.index
+
+    # facts table
+    facts_table = df[['gdp_growth', 'gdp_per_capita', 'Density_pkm', 'Year', 'Financial_flows_to_developing_countries', 'Value_co2_emissions_kt_by_country', 'Access_to_clean_fuels_for_cooking']].reset_index(drop=True)
+    facts_table['facts_id'] = facts_table.index
+
+    # electricity dim
+    electricity_dim = df[['Electricity_from_fossil_fuels', 'Electricity_from_nuclear', 'Electricity_from_renewables', 'Low-carbon_electricity_perct', 'Access_to_electricity_perct']].reset_index(drop=True)
+    electricity_dim['electricity_data_id'] = electricity_dim.index
+
+    # energy dim
+    energy_dim = df[['Primary_energy_consumption_per_capita_kWhperson', 'Energy_intensity_level_of_primary_energy', 'Renewable-electricity-generating-capacity-per-capita', 'Renewable_energy_share_in_total_final_energy_consumption_perct',
+                    'Renewables_perct_primary_energy']]
+    energy_dim['energy_data_id'] = energy_dim.index
+
+    return {'country_dim': country_dim.to_dict(orient='dict'),
+            'location_dim': location_dim.to_dict(orient='dict'),
+            'facts_table': country_dim.to_dict(orient='dict'),
+            'electricity_dim': electricity_dim.to_dict(orient='dict'),
+            'energy_dim': energy_dim.to_dict(orient='dict')
+        }
+
+
+@test
+def test_output(output, *args) -> None:
+    """
+    Template code for testing the output of the block.
+    """
+    assert output is not None, 'The output is undefined'
