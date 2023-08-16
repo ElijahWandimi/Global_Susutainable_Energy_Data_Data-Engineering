@@ -10,15 +10,14 @@ blocks:
   language: python
   name: load_global_data
   retry_config: null
-  status: executed
+  status: updated
   type: data_loader
   upstream_blocks: []
   uuid: load_global_data
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration: {}
-  downstream_blocks:
-  - global_data_bq_loader
+  downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -30,21 +29,6 @@ blocks:
   upstream_blocks:
   - load_global_data
   uuid: create_data_model
-- all_upstream_blocks_executed: false
-  color: null
-  configuration: {}
-  downstream_blocks: []
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: global_data_bq_loader
-  retry_config: null
-  status: executed
-  type: data_exporter
-  upstream_blocks:
-  - create_data_model
-  uuid: global_data_bq_loader
 callbacks: []
 concurrency_config: {}
 conditionals: []
@@ -60,6 +44,6 @@ retry_config: {}
 spark_config: {}
 tags: []
 type: python
-updated_at: '2023-08-17 20:23:22'
+updated_at: '2023-08-16 15:35:53'
 uuid: hidden_fog
 widgets: []

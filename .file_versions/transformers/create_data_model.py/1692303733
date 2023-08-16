@@ -70,7 +70,7 @@ def transform(df, *args, **kwargs):
             'facts_table': facts_table.to_dict(orient='dict'),
             'electricity_dim': electricity_dim.to_dict(orient='dict') ,
             'energy_dim': energy_dim.to_dict(orient='dict')
-        }
+    }
 
 
 @test

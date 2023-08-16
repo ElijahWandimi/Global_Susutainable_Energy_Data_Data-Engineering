@@ -30,7 +30,7 @@ blocks:
   upstream_blocks:
   - load_global_data
   uuid: create_data_model
-- all_upstream_blocks_executed: false
+- all_upstream_blocks_executed: true
   color: null
   configuration: {}
   downstream_blocks: []
@@ -60,6 +60,6 @@ retry_config: {}
 spark_config: {}
 tags: []
 type: python
-updated_at: '2023-08-17 20:23:22'
+updated_at: '2023-08-17 20:22:11'
 uuid: hidden_fog
 widgets: []

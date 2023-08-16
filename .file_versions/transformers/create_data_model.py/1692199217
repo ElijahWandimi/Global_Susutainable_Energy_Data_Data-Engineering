@@ -39,8 +39,6 @@ def transform(df, *args, **kwargs):
     }
 
     df.rename(columns=column_mapper, inplace=True)
-    df['country_id'] = df['Entity'].map(dict(zip(df['Entity'].unique(), df[['Entity']].reset_index(drop=True).drop_duplicates().index)))
-
 
     # country dim
     country_dim  = df[['Entity', 'Land_Area']].reset_index(drop=True)
@@ -54,23 +52,18 @@ def transform(df, *args, **kwargs):
 
     # facts table
     facts_table = df[['gdp_growth', 'gdp_per_capita', 'Density_pkm', 'Year', 'Financial_flows_to_developing_countries', 'Value_co2_emissions_kt_by_country', 'Access_to_clean_fuels_for_cooking']].reset_index(drop=True)
-    facts_table['facts_id'] = df['country_id']
+    facts_table['facts_id'] = facts_table.index
 
     # electricity dim
     electricity_dim = df[['Electricity_from_fossil_fuels', 'Electricity_from_nuclear', 'Electricity_from_renewables', 'Low-carbon_electricity_perct', 'Access_to_electricity_perct']].reset_index(drop=True)
-    electricity_dim['electricity_data_id'] = df['country_id']
+    electricity_dim['electricity_data_id'] = electricity_dim.index
 
     # energy dim
     energy_dim = df[['Primary_energy_consumption_per_capita_kWhperson', 'Energy_intensity_level_of_primary_energy', 'Renewable-electricity-generating-capacity-per-capita', 'Renewable_energy_share_in_total_final_energy_consumption_perct',
                     'Renewables_perct_primary_energy']]
-    energy_dim['energy_data_id'] = df['country_id']
+    energy_dim['energy_data_id'] = energy_dim.index
 
-    return {'country_dim': country_dim.to_dict(orient='dict'),
-            'location_dim': location_dim.to_dict(orient='dict'),
-            'facts_table': facts_table.to_dict(orient='dict'),
-            'electricity_dim': electricity_dim.to_dict(orient='dict') ,
-            'energy_dim': energy_dim.to_dict(orient='dict')
-        }
+    return data
 
 
 @test
